@@ -8,7 +8,7 @@ from .common import Magento2SyncTestCase, recorder
 class TestImportPartnerCategory(Magento2SyncTestCase):
     @recorder.use_cassette
     def test_import_partner_category(self):
-        """ Import of a partner category """
+        """Import of a partner category"""
         self.env["magento.res.partner.category"].import_record(self.backend, 2)
 
         backend_id = self.backend.id
@@ -22,7 +22,7 @@ class TestImportPartnerCategory(Magento2SyncTestCase):
 
     @recorder.use_cassette
     def test_import_existing_partner_category(self):
-        """ Bind of an existing category with same name"""
+        """Bind of an existing category with same name"""
         binding_model = self.env["magento.res.partner.category"]
         category_model = self.env["res.partner.category"]
 

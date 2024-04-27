@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 
 class MagentoInvoiceExporter(Component):
-    """ Export invoices to Magento """
+    """Export invoices to Magento"""
 
     _name = "magento.account.move.exporter"
     _inherit = "magento.exporter"
@@ -61,7 +61,7 @@ class MagentoInvoiceExporter(Component):
         return item_qty
 
     def run(self, binding):
-        """ Run the job to export the validated/paid invoice """
+        """Run the job to export the validated/paid invoice"""
 
         magento_order = binding.magento_order_id
         magento_store = magento_order.store_id

@@ -11,7 +11,7 @@ from odoo.addons.component.core import Component
 
 
 class StoreCreditLineBuilder(Component):
-    """ Return values for a Store Credit line """
+    """Return values for a Store Credit line"""
 
     _name = "magento.order.line.builder.store_credit"
     _inherit = "ecommerce.order.line.builder"
@@ -25,7 +25,7 @@ class StoreCreditLineBuilder(Component):
 
 
 class RewardsLineBuilder(Component):
-    """ Return values for a Rewards line """
+    """Return values for a Rewards line"""
 
     _name = "magento.order.line.builder.rewards"
     _inherit = "ecommerce.order.line.builder"

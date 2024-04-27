@@ -52,7 +52,7 @@ class MagentoSaleOrder(models.Model):
 
     @job(default_channel="root.magento")
     def export_state_change(self, allowed_states=None, comment=None, notify=None):
-        """ Change state of a sales order on Magento """
+        """Change state of a sales order on Magento"""
         self.ensure_one()
         with self.backend_id.work_on(self._name) as work:
             exporter = work.component(usage="sale.state.exporter")
@@ -63,7 +63,7 @@ class MagentoSaleOrder(models.Model):
     @job(default_channel="root.magento")
     @api.model
     def import_batch(self, backend, filters=None):
-        """ Prepare the import of Sales Orders from Magento """
+        """Prepare the import of Sales Orders from Magento"""
         assert "magento_storeview_id" in filters, (
             "Missing information about " "Magento Storeview"
         )
@@ -82,7 +82,7 @@ class SaleOrder(models.Model):
 
     @api.depends("magento_bind_ids", "magento_bind_ids.magento_parent_id")
     def get_parent_id(self):
-        """ Return the parent order.
+        """Return the parent order.
 
         For Magento sales orders, the magento parent order is stored
         in the binding, get it from there.
@@ -98,7 +98,7 @@ class SaleOrder(models.Model):
                 order.parent_id = magento_order.magento_parent_id.odoo_id
 
     def _magento_cancel(self):
-        """ Cancel sales order on Magento
+        """Cancel sales order on Magento
 
         Do not export the other state changes, Magento handles them itself
         when it receives shipments and invoices.
@@ -257,7 +257,7 @@ class SaleOrderAdapter(Component):
     def search(
         self, filters=None, from_date=None, to_date=None, magento_storeview_ids=None
     ):
-        """ Search records according to some criteria
+        """Search records according to some criteria
         and returns a list of ids
 
         :rtype: list
@@ -285,7 +285,7 @@ class SaleOrderAdapter(Component):
         return super(SaleOrderAdapter, self).search(arguments)
 
     def read(self, external_id, attributes=None):
-        """ Returns the information of a record
+        """Returns the information of a record
 
         :rtype: dict
         """

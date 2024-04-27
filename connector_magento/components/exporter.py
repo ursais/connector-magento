@@ -32,7 +32,7 @@ _logger = logging.getLogger(__name__)
 
 
 class MagentoBaseExporter(AbstractComponent):
-    """ Base exporter for Magento """
+    """Base exporter for Magento"""
 
     _name = "magento.base.exporter"
     _inherit = ["base.exporter", "base.magento.connector"]
@@ -107,15 +107,15 @@ class MagentoBaseExporter(AbstractComponent):
         return result
 
     def _run(self):
-        """ Flow of the synchronization, implemented in inherited classes"""
+        """Flow of the synchronization, implemented in inherited classes"""
         raise NotImplementedError
 
     def _after_export(self):
-        """ Can do several actions after exporting a record on magento """
+        """Can do several actions after exporting a record on magento"""
 
 
 class MagentoExporter(AbstractComponent):
-    """ A common flow for the exports to Magento """
+    """A common flow for the exports to Magento"""
 
     _name = "magento.exporter"
     _inherit = "magento.base.exporter"
@@ -157,7 +157,7 @@ class MagentoExporter(AbstractComponent):
             )
 
     def _has_to_skip(self):
-        """ Return True if the export can be skipped """
+        """Return True if the export can be skipped"""
         return False
 
     @contextmanager
@@ -296,7 +296,7 @@ class MagentoExporter(AbstractComponent):
             exporter.run(binding)
 
     def _export_dependencies(self):
-        """ Export the dependencies for the record"""
+        """Export the dependencies for the record"""
         return
 
     def _map_data(self):
@@ -327,28 +327,28 @@ class MagentoExporter(AbstractComponent):
         return
 
     def _create_data(self, map_record, fields=None, **kwargs):
-        """ Get the data to pass to :py:meth:`_create` """
+        """Get the data to pass to :py:meth:`_create`"""
         return map_record.values(for_create=True, fields=fields, **kwargs)
 
     def _create(self, data):
-        """ Create the Magento record """
+        """Create the Magento record"""
         # special check on data before export
         self._validate_create_data(data)
         return self.backend_adapter.create(data)
 
     def _update_data(self, map_record, fields=None, **kwargs):
-        """ Get the data to pass to :py:meth:`_update` """
+        """Get the data to pass to :py:meth:`_update`"""
         return map_record.values(fields=fields, **kwargs)
 
     def _update(self, data):
-        """ Update an Magento record """
+        """Update an Magento record"""
         assert self.external_id
         # special check on data before export
         self._validate_update_data(data)
         self.backend_adapter.write(self.external_id, data)
 
     def _run(self, fields=None):
-        """ Flow of the synchronization, implemented in inherited classes"""
+        """Flow of the synchronization, implemented in inherited classes"""
         assert self.binding
 
         if not self.external_id:

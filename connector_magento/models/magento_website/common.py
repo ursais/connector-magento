@@ -29,7 +29,9 @@ class MagentoWebsite(models.Model):
         string="Stores",
         readonly=True,
     )
-    import_partners_from_date = fields.Datetime(string="Import partners from date",)
+    import_partners_from_date = fields.Datetime(
+        string="Import partners from date",
+    )
     product_binding_ids = fields.Many2many(
         comodel_name="magento.product.product",
         string="Magento Products",

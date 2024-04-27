@@ -1,7 +1,7 @@
 # Copyright 2014-2019 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html)
 
-import mock
+from unittest import mock
 
 from odoo import exceptions
 
@@ -9,7 +9,7 @@ from .common import MagentoSyncTestCase
 
 
 class TestRelatedActionStorage(MagentoSyncTestCase):
-    """ Test related actions on stored jobs """
+    """Test related actions on stored jobs"""
 
     def setUp(self):
         super(TestRelatedActionStorage, self).setUp()
@@ -17,7 +17,7 @@ class TestRelatedActionStorage(MagentoSyncTestCase):
         self.QueueJob = self.env["queue.job"]
 
     def test_unwrap_binding(self):
-        """ Open a related action opening an unwrapped binding """
+        """Open a related action opening an unwrapped binding"""
         product = self.env.ref("product.product_product_7")
         magento_product = self.MagentoProduct.create(
             {"odoo_id": product.id, "backend_id": self.backend.id}
@@ -36,7 +36,7 @@ class TestRelatedActionStorage(MagentoSyncTestCase):
         self.assertEqual(stored.open_related_action(), expected)
 
     def test_link(self):
-        """ Open a related action opening an url on Magento """
+        """Open a related action opening an url on Magento"""
         self.backend.write({"admin_location": "http://www.example.com/admin"})
         job = self.MagentoProduct.with_delay().import_record(self.backend, "123456")
         stored = job.db_record()
@@ -50,7 +50,7 @@ class TestRelatedActionStorage(MagentoSyncTestCase):
         self.assertEqual(stored.open_related_action(), expected)
 
     def test_link_no_location(self):
-        """ Related action opening an url, admin location is not configured """
+        """Related action opening an url, admin location is not configured"""
         self.backend.write({"admin_location": False})
         job = self.MagentoProduct.with_delay().import_record(self.backend, "123456")
         stored = job.db_record()

@@ -26,7 +26,7 @@ _logger = logging.getLogger(__name__)
 
 
 class MagentoImporter(AbstractComponent):
-    """ Base importer for Magento """
+    """Base importer for Magento"""
 
     _name = "magento.importer"
     _inherit = ["base.importer", "base.magento.connector"]
@@ -38,11 +38,11 @@ class MagentoImporter(AbstractComponent):
         self.magento_record = None
 
     def _get_magento_data(self):
-        """ Return the raw Magento data for ``self.external_id`` """
+        """Return the raw Magento data for ``self.external_id``"""
         return self.backend_adapter.read(self.external_id)
 
     def _before_import(self):
-        """ Hook called before the import, when we have the Magento
+        """Hook called before the import, when we have the Magento
         data"""
 
     def _is_uptodate(self, binding):
@@ -70,7 +70,7 @@ class MagentoImporter(AbstractComponent):
     def _import_dependency(
         self, external_id, binding_model, importer=None, always=False
     ):
-        """ Import a dependency.
+        """Import a dependency.
 
         The importer class is a class or subclass of
         :class:`MagentoImporter`. A specific class can be defined.
@@ -106,7 +106,7 @@ class MagentoImporter(AbstractComponent):
                 )
 
     def _import_dependencies(self):
-        """ Import the dependencies for the record
+        """Import the dependencies for the record
 
         Import of dependencies can be done manually or by calling
         :meth:`_import_dependency` for each dependency.
@@ -114,14 +114,14 @@ class MagentoImporter(AbstractComponent):
         return
 
     def _map_data(self):
-        """ Returns an instance of
+        """Returns an instance of
         :py:class:`~odoo.addons.connector.components.mapper.MapRecord`
 
         """
         return self.mapper.map_record(self.magento_record)
 
     def _validate_data(self, data):
-        """ Check if the values to import are correct
+        """Check if the values to import are correct
 
         Pro-actively check before the ``_create`` or
         ``_update`` if some fields are missing or invalid.
@@ -131,7 +131,7 @@ class MagentoImporter(AbstractComponent):
         return
 
     def _must_skip(self):
-        """ Hook called right after we read the data from the backend.
+        """Hook called right after we read the data from the backend.
 
         If the method returns a message giving a reason for the
         skipping, the import will be interrupted and the message
@@ -151,7 +151,7 @@ class MagentoImporter(AbstractComponent):
         return map_record.values(for_create=True, **kwargs)
 
     def _create(self, data):
-        """ Create the OpenERP record """
+        """Create the OpenERP record"""
         # special check on data before import
         self._validate_data(data)
         model = self.model.with_context(connector_no_export=True)
@@ -163,7 +163,7 @@ class MagentoImporter(AbstractComponent):
         return map_record.values(**kwargs)
 
     def _update(self, binding, data):
-        """ Update an OpenERP record """
+        """Update an OpenERP record"""
         # special check on data before import
         self._validate_data(data)
         binding.with_context(connector_no_export=True).write(data)
@@ -171,11 +171,11 @@ class MagentoImporter(AbstractComponent):
         return
 
     def _after_import(self, binding):
-        """ Hook called at the end of the import """
+        """Hook called at the end of the import"""
         return
 
     def run(self, external_id, force=False, data=None):
-        """ Run the synchronization
+        """Run the synchronization
 
         :param external_id: identifier of the record on Magento
         """
@@ -228,7 +228,7 @@ class MagentoImporter(AbstractComponent):
 
 
 class BatchImporter(AbstractComponent):
-    """ The role of a BatchImporter is to search for a list of
+    """The role of a BatchImporter is to search for a list of
     items to import, then it can either import them directly or delay
     the import of each item separately.
     """
@@ -238,13 +238,13 @@ class BatchImporter(AbstractComponent):
     _usage = "batch.importer"
 
     def run(self, filters=None):
-        """ Run the synchronization """
+        """Run the synchronization"""
         record_ids = self.backend_adapter.search(filters)
         for record_id in record_ids:
             self._import_record(record_id)
 
     def _import_record(self, external_id):
-        """ Import a record directly or delay the import of the record.
+        """Import a record directly or delay the import of the record.
 
         Method to implement in sub-classes.
         """
@@ -252,30 +252,30 @@ class BatchImporter(AbstractComponent):
 
 
 class DirectBatchImporter(AbstractComponent):
-    """ Import the records directly, without delaying the jobs. """
+    """Import the records directly, without delaying the jobs."""
 
     _name = "magento.direct.batch.importer"
     _inherit = "magento.batch.importer"
 
     def _import_record(self, external_id):
-        """ Import the record directly """
+        """Import the record directly"""
         self.model.import_record(self.backend_record, external_id)
 
 
 class DelayedBatchImporter(AbstractComponent):
-    """ Delay import of the records """
+    """Delay import of the records"""
 
     _name = "magento.delayed.batch.importer"
     _inherit = "magento.batch.importer"
 
     def _import_record(self, external_id, job_options=None, **kwargs):
-        """ Delay the import of the records"""
+        """Delay the import of the records"""
         delayable = self.model.with_delay(**job_options or {})
         delayable.import_record(self.backend_record, external_id, **kwargs)
 
 
 class SimpleRecordImporter(Component):
-    """ Import one Magento Website """
+    """Import one Magento Website"""
 
     _name = "magento.simple.record.importer"
     _inherit = "magento.importer"
@@ -285,7 +285,7 @@ class SimpleRecordImporter(Component):
 
 
 class TranslationImporter(Component):
-    """ Import translations for a record.
+    """Import translations for a record.
 
     Usually called from importers, in ``_after_import``.
     For instance from the products and products' categories importers.
@@ -296,7 +296,7 @@ class TranslationImporter(Component):
     _usage = "translation.importer"
 
     def _get_magento_data(self, storeview=None):
-        """ Return the raw Magento data for ``self.external_id`` """
+        """Return the raw Magento data for ``self.external_id``"""
         if storeview is None:
             storeview_id = None
         elif self.collection.version == "2.0":

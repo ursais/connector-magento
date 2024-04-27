@@ -21,7 +21,7 @@ class TestSaleOrder(Magento2SyncTestCase):
         )
 
     def test_import_sale_order(self):
-        """ Import sale order: check """
+        """Import sale order: check"""
         binding = self._import_sale_order("9")
         self.assertEqual(
             binding.workflow_process_id,
@@ -31,13 +31,13 @@ class TestSaleOrder(Magento2SyncTestCase):
         )
 
     def test_import_sale_order_with_prefix(self):
-        """ Import sale order with prefix """
+        """Import sale order with prefix"""
         self.backend.write({"sale_prefix": "EC"})
         binding = self._import_sale_order("9")
         self.assertEqual(binding.name, "EC000000013")
 
     def test_import_sale_order_with_configurable(self):
-        """ Import sale order with configurable product """
+        """Import sale order with configurable product"""
         binding = self._import_sale_order("9")
 
         prod1 = self.env["magento.product.product"].search(
@@ -71,7 +71,7 @@ class TestSaleOrder(Magento2SyncTestCase):
         self.assert_records(expected, binding.order_line)
 
     def test_import_sale_order_copy_quotation(self):
-        """ Copy a sales order with copy_quotation move bindings """
+        """Copy a sales order with copy_quotation move bindings"""
         binding = self._import_sale_order("9")
         order = binding.odoo_id
         order.action_cancel()
@@ -82,7 +82,7 @@ class TestSaleOrder(Magento2SyncTestCase):
             self.assertEqual(mag_line.order_id, new)
 
     def test_import_sale_order_edited(self):
-        """ Import of an edited sale order links to its parent
+        """Import of an edited sale order links to its parent
         (order '9' was cancelled in Magento after recording its cassette)
         """
         binding = self._import_sale_order("9")
@@ -91,7 +91,7 @@ class TestSaleOrder(Magento2SyncTestCase):
         self.assertTrue(binding.canceled_in_backend)
 
     def test_import_sale_order_storeview_options(self):
-        """ Check if storeview options are propagated """
+        """Check if storeview options are propagated"""
         storeview = self.env["magento.storeview"].search(
             [("backend_id", "=", self.backend.id), ("external_id", "=", "1")]
         )
@@ -111,7 +111,7 @@ class TestSaleOrder(Magento2SyncTestCase):
         )
 
     def test_import_sale_order_carrier_product(self):
-        """ Product of a carrier is used in the sale line """
+        """Product of a carrier is used in the sale line"""
         product = self.env["product.product"].create({"name": "Carrier Product"})
         self.env["delivery.carrier"].create(
             {
@@ -134,7 +134,7 @@ class TestSaleOrder(Magento2SyncTestCase):
             "has been found. Line names: %s"
             % (
                 ", ".join(
-                    "{} ({})".format(line.name, line.product_id.name)
+                    f"{line.name} ({line.product_id.name})"
                     for line in binding.order_line
                 ),
             ),
@@ -206,7 +206,7 @@ class TestSaleOrder(Magento2SyncTestCase):
         self.assertEqual(binding.fiscal_position_id, fp4)
 
     def test_sale_order_cancel_delay_job(self):
-        """ Cancel an order, delay a cancel job """
+        """Cancel an order, delay a cancel job"""
         binding = self._import_sale_order("12")
         with self.mock_with_delay() as (delayable_cls, delayable):
             order = binding.odoo_id
@@ -216,17 +216,18 @@ class TestSaleOrder(Magento2SyncTestCase):
             delay_args, __ = delayable_cls.call_args
             self.assertEqual(binding, delay_args[0])
 
-            delayable.export_state_change.assert_called_with(allowed_states=["cancel"],)
+            delayable.export_state_change.assert_called_with(
+                allowed_states=["cancel"],
+            )
 
     def test_cancel_export(self):
-        """ Export the cancel state """
+        """Export the cancel state"""
         binding = self._import_sale_order("12")
         with self.mock_with_delay():
             order = binding.odoo_id
             order.action_cancel()
 
         with recorder.use_cassette("test_sale_order_cancel_export") as cassette:
-
             # call the job synchronously, so we check the calls
             binding.export_state_change(allowed_states=["cancel"])
             # 1. fetch sales_order
@@ -246,7 +247,7 @@ class TestSaleOrder(Magento2SyncTestCase):
             )
 
     def test_copy_quotation_delay_export_state(self):
-        """ Delay a state export on new copy from canceled order """
+        """Delay a state export on new copy from canceled order"""
         binding = self._import_sale_order("12")
 
         order = binding.odoo_id
@@ -270,12 +271,11 @@ class TestSaleOrder(Magento2SyncTestCase):
             self.assertTrue(delayable.export_state_change.called)
 
     def test_copy_quotation_export_state(self):
-        """ Export a new state on new copy from canceled order """
+        """Export a new state on new copy from canceled order"""
         binding = self._import_sale_order("12")
 
         # cancel the order
         with recorder.use_cassette("test_sale_order_reopen_export") as cassette:
-
             with self.mock_with_delay():
                 order = binding.odoo_id
                 order.action_cancel()
@@ -317,8 +317,7 @@ class TestSaleOrder(Magento2SyncTestCase):
         )
 
     def test_alternate_currency_pricelist(self):
-        """ An order with an alternate currency selects a matching pricelist
-        """
+        """An order with an alternate currency selects a matching pricelist"""
         # Ensure a Euro pricelist exists
         self.env.ref("product.list0").copy(
             {"currency_id": self.env.ref("base.EUR").id, "sequence": 999}
@@ -327,7 +326,7 @@ class TestSaleOrder(Magento2SyncTestCase):
         self.assertEqual(binding.pricelist_id.currency_id.name, "EUR")
 
     def test_100_percent_discount(self):
-        """ Test if a 100% discount order is not blocked by rule paid """
+        """Test if a 100% discount order is not blocked by rule paid"""
         mode = self.env["account.payment.mode"].search([("name", "=", "checkmo")])
         mode.import_rule = "paid"
         binding = self._import_sale_order("17")

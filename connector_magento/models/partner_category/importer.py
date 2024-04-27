@@ -6,7 +6,7 @@ from odoo.addons.connector.components.mapper import mapping, only_create
 
 
 class PartnerCategoryBatchImporter(Component):
-    """ Delay import of the records """
+    """Delay import of the records"""
 
     _name = "magento.partner.category.batch.importer"
     _inherit = "magento.delayed.batch.importer"
@@ -24,7 +24,7 @@ class PartnerCategoryImportMapper(Component):
 
     @mapping
     def external_id(self, record):
-        """ 'id' for Magento 2.x, 'customer_group_id' for Magento 1.x """
+        """'id' for Magento 2.x, 'customer_group_id' for Magento 1.x"""
         return {"external_id": record.get("id") or ["customer_group_id"]}
 
     @mapping
@@ -33,17 +33,18 @@ class PartnerCategoryImportMapper(Component):
 
     @mapping
     def name(self, record):
-        """ 'code' for Magento 2.x, 'customer_group_code' for Magento 1.x """
+        """'code' for Magento 2.x, 'customer_group_code' for Magento 1.x"""
         return {"name": record.get("code") or record["customer_group_code"]}
 
     @only_create
     @mapping
     def odoo_id(self, record):
-        """ Will bind the category on a existing one with the same name.
-        'code' for Magento 2.x, 'customer_group_code' for Magento 1.x """
+        """Will bind the category on a existing one with the same name.
+        'code' for Magento 2.x, 'customer_group_code' for Magento 1.x"""
         code = record.get("code") or record["customer_group_code"]
         existing = self.env["res.partner.category"].search(
-            [("name", "=", code)], limit=1,
+            [("name", "=", code)],
+            limit=1,
         )
         if existing:
             return {"odoo_id": existing.id}

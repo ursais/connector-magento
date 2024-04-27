@@ -26,7 +26,7 @@ class MagentoBackend(models.Model):
 
     @api.model
     def select_versions(self):
-        """ Available versions in the backend.
+        """Available versions in the backend.
 
         Can be inherited to add custom versions.  Using this method
         to add a version from an ``_inherit`` does not constrain
@@ -45,7 +45,9 @@ class MagentoBackend(models.Model):
     name = fields.Char(string="Name", required=True)
     version = fields.Selection(selection="select_versions", required=True)
     location = fields.Char(
-        string="Location", required=True, help="Url to magento application",
+        string="Location",
+        required=True,
+        help="Url to magento application",
     )
     admin_location = fields.Char(string="Admin Location")
     use_custom_api_path = fields.Boolean(
@@ -54,8 +56,14 @@ class MagentoBackend(models.Model):
         "Check this box if you use a custom API path, in that case, "
         "the location has to be completed with the custom API path ",
     )
-    username = fields.Char(string="Username", help="Webservice user",)
-    password = fields.Char(string="Password", help="Webservice password",)
+    username = fields.Char(
+        string="Username",
+        help="Webservice user",
+    )
+    password = fields.Char(
+        string="Password",
+        help="Webservice password",
+    )
     token = fields.Char(
         help=(
             "Authentication token for Magento 2.0+. See https://devdocs."
@@ -122,8 +130,12 @@ class MagentoBackend(models.Model):
     )
 
     # TODO? add a field `auto_activate` -> activate a cron
-    import_products_from_date = fields.Datetime(string="Import products from date",)
-    import_categories_from_date = fields.Datetime(string="Import categories from date",)
+    import_products_from_date = fields.Datetime(
+        string="Import products from date",
+    )
+    import_categories_from_date = fields.Datetime(
+        string="Import categories from date",
+    )
     product_stock_field_id = fields.Many2one(
         comodel_name="ir.model.fields",
         string="Stock Field",
@@ -171,7 +183,7 @@ class MagentoBackend(models.Model):
     ]
 
     def check_magento_structure(self):
-        """ Used in each data import.
+        """Used in each data import.
 
         Verify if a website exists for each backend before starting the import.
         """
@@ -239,14 +251,14 @@ class MagentoBackend(models.Model):
             )
 
     def import_partners(self):
-        """ Import partners from all websites """
+        """Import partners from all websites"""
         for backend in self:
             backend.check_magento_structure()
             backend.website_ids.import_partners()
         return True
 
     def import_sale_orders(self):
-        """ Import sale orders from all store views """
+        """Import sale orders from all store views"""
         storeview_obj = self.env["magento.storeview"]
         storeviews = storeview_obj.search([("backend_id", "in", self.ids)])
         storeviews.import_sale_orders()
@@ -255,7 +267,9 @@ class MagentoBackend(models.Model):
     def import_customer_groups(self):
         for backend in self:
             backend.check_magento_structure()
-            self.env["magento.res.partner.category"].with_delay().import_batch(backend,)
+            self.env["magento.res.partner.category"].with_delay().import_batch(
+                backend,
+            )
         return True
 
     def _import_from_date(self, model, from_date_field):

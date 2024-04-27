@@ -18,7 +18,7 @@ class TestImportProduct(Magento2SyncTestCase):
 
     @recorder.use_cassette
     def test_import_product(self):
-        """ Import of a simple product """
+        """Import of a simple product"""
         backend_id = self.backend.id
 
         # create the magento category of this product
@@ -36,7 +36,7 @@ class TestImportProduct(Magento2SyncTestCase):
 
     @recorder.use_cassette
     def test_import_product_category_missing(self):
-        """ Import of a simple product when the category is missing """
+        """Import of a simple product when the category is missing"""
         backend_id = self.backend.id
         self.assertEqual(
             len(
@@ -66,7 +66,7 @@ class TestImportProduct(Magento2SyncTestCase):
 
     @recorder.use_cassette
     def test_import_product_configurable(self):
-        """ Import of a configurable product : no need to import it
+        """Import of a configurable product : no need to import it
 
         The 'configurable' part of the product does not need to be imported,
         we import only the variants
@@ -83,13 +83,13 @@ class TestImportProduct(Magento2SyncTestCase):
 
     @recorder.use_cassette
     def test_import_product_bundle(self):
-        """ Bundle should fail: not yet supported """
+        """Bundle should fail: not yet supported"""
         with self.assertRaises(InvalidDataError):
             self.env["magento.product.product"].import_record(self.backend, "24-WG080")
 
     @recorder.use_cassette
     def test_import_product_grouped(self):
-        """ Grouped should fail: not yet supported """
+        """Grouped should fail: not yet supported"""
         with self.assertRaises(InvalidDataError):
             self.env["magento.product.product"].import_record(
                 self.backend, "24-WG085_Group"
@@ -97,7 +97,7 @@ class TestImportProduct(Magento2SyncTestCase):
 
     @recorder.use_cassette
     def test_import_product_virtual(self):
-        """ Virtual products are created as service products """
+        """Virtual products are created as service products"""
         backend_id = self.backend.id
 
         self.env["magento.product.product"].import_record(self.backend, "TRN")
@@ -110,7 +110,7 @@ class TestImportProduct(Magento2SyncTestCase):
 
     @recorder.use_cassette
     def test_import_product_quoted_sku(self):
-        """ Import of a simple product """
+        """Import of a simple product"""
         backend_id = self.backend.id
         self.env["magento.product.product"].import_record(self.backend, "bla/koe")
         product_model = self.env["magento.product.product"]

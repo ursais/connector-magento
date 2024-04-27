@@ -5,7 +5,7 @@ from .common import MagentoSyncTestCase, recorder
 
 
 class TestUpdateStockQty(MagentoSyncTestCase):
-    """ Test the export of pickings to Magento """
+    """Test the export of pickings to Magento"""
 
     def _product_change_qty(self, product, new_qty, location_id=False):
         wizard_model = self.env["stock.change.product.qty"]
@@ -57,7 +57,9 @@ class TestUpdateStockQty(MagentoSyncTestCase):
             self.assertEqual((binding,), delay_args)
             self.assertEqual(20, delay_kwargs.get("priority"))
 
-            delayable.export_inventory.assert_called_with(fields=["magento_qty"],)
+            delayable.export_inventory.assert_called_with(
+                fields=["magento_qty"],
+            )
 
     def test_compute_new_qty_different_field(self):
         stock_field = self.env.ref("stock.field_product_product__qty_available")
@@ -112,7 +114,9 @@ class TestUpdateStockQty(MagentoSyncTestCase):
             self.assertEqual((binding,), delay_args)
             self.assertEqual(20, delay_kwargs.get("priority"))
 
-            delayable.export_inventory.assert_called_with(fields=["magento_qty"],)
+            delayable.export_inventory.assert_called_with(
+                fields=["magento_qty"],
+            )
 
     def test_export_qty_api(self):
         product = self.binding_product.odoo_id
@@ -157,7 +161,8 @@ class TestUpdateStockQty(MagentoSyncTestCase):
             self.assertFalse(cargs)
             self.assertEqual(set(ckwargs.keys()), {"fields"})
             self.assertEqual(
-                set(ckwargs["fields"]), {"manage_stock", "backorders", "magento_qty"},
+                set(ckwargs["fields"]),
+                {"manage_stock", "backorders", "magento_qty"},
             )
 
     def test_export_product_inventory_write_job(self):
@@ -232,4 +237,6 @@ class TestUpdateStockQty(MagentoSyncTestCase):
             self.assertEqual((binding,), delay_args)
             self.assertEqual(20, delay_kwargs.get("priority"))
 
-            delayable.export_inventory.assert_called_with(fields=["magento_qty"],)
+            delayable.export_inventory.assert_called_with(
+                fields=["magento_qty"],
+            )

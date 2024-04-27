@@ -27,7 +27,7 @@ class WebsiteImportMapper(Component):
 
 
 class MagentoWebsiteImporter(Component):
-    """ Import one Magento Website """
+    """Import one Magento Website"""
 
     _name = "magento.website.record.importer"
     _inherit = "magento.importer"

@@ -24,7 +24,7 @@ except ImportError:
 MAGENTO_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
-class MagentoLocation(object):
+class MagentoLocation:
     def __init__(
         self,
         location,
@@ -53,14 +53,12 @@ class MagentoLocation(object):
         if not self.use_auth_basic:
             return location
         assert self.auth_basic_username and self.auth_basic_password
-        replacement = "{}:{}@".format(
-            self.auth_basic_username, self.auth_basic_password
-        )
+        replacement = f"{self.auth_basic_username}:{self.auth_basic_password}@"
         location = location.replace("://", "://" + replacement)
         return location
 
 
-class Magento2Client(object):
+class Magento2Client:
     def __init__(self, url, token, verify_ssl=True, use_custom_api_path=False):
         if not use_custom_api_path:
             url += "/" if not url.endswith("/") else ""
@@ -73,7 +71,7 @@ class Magento2Client(object):
         if resource_path is None:
             _logger.exception("Magento2 REST API called without resource path")
             raise NotImplementedError
-        url = "{}/{}".format(self._url, resource_path)
+        url = f"{self._url}/{resource_path}"
         if storeview:
             # https://github.com/magento/magento2/issues/3864
             url = url.replace("/rest/V1/", "/rest/%s/V1/" % storeview)
@@ -95,7 +93,7 @@ class Magento2Client(object):
         return res.json()
 
 
-class MagentoAPI(object):
+class MagentoAPI:
     def __init__(self, location):
         """
         :param location: Magento location
@@ -126,7 +124,7 @@ class MagentoAPI(object):
         return self._api
 
     def api_call(self, method, arguments, http_method=None, storeview=None):
-        """ Adjust available arguments per API """
+        """Adjust available arguments per API"""
         if isinstance(self.api, magentolib.API):
             return self.api.call(method, arguments)
         return self.api.call(
@@ -168,7 +166,7 @@ class MagentoAPI(object):
             # Uncomment to record requests/responses in ``recorder``
             # record(method, arguments, result)
             return result
-        except (socket.gaierror, socket.error, socket.timeout) as err:
+        except (OSError, socket.gaierror, socket.timeout) as err:
             raise NetworkRetryableError(
                 "A network error caused the failure of the job: " "%s" % err
             )
@@ -191,7 +189,7 @@ class MagentoAPI(object):
 
 
 class MagentoCRUDAdapter(AbstractComponent):
-    """ External Records Adapter for Magento """
+    """External Records Adapter for Magento"""
 
     # pylint: disable=method-required-super
 
@@ -205,7 +203,7 @@ class MagentoCRUDAdapter(AbstractComponent):
         raise NotImplementedError
 
     def read(self, external_id, attributes=None, storeview=None):
-        """ Returns the information of a record """
+        """Returns the information of a record"""
         raise NotImplementedError
 
     def search_read(self, filters=None):
@@ -214,15 +212,15 @@ class MagentoCRUDAdapter(AbstractComponent):
         raise NotImplementedError
 
     def create(self, data):
-        """ Create a record on the external system """
+        """Create a record on the external system"""
         raise NotImplementedError
 
     def write(self, external_id, data):
-        """ Update records on the external system """
+        """Update records on the external system"""
         raise NotImplementedError
 
     def delete(self, external_id):
-        """ Delete a record on the external system """
+        """Delete a record on the external system"""
         raise NotImplementedError
 
     def _call(self, method, arguments=None, http_method=None, storeview=None):
@@ -365,7 +363,7 @@ class GenericAdapter(AbstractComponent):
             raise NotImplementedError
         if self._magento2_key:
             return self._call(
-                "{}/{}".format(self._magento2_model, self.escape(external_id)),
+                f"{self._magento2_model}/{self.escape(external_id)}",
                 attributes,
                 storeview=storeview,
             )
@@ -386,13 +384,13 @@ class GenericAdapter(AbstractComponent):
         return self._call(self._magento2_search or self._magento2_model, params)
 
     def create(self, data):
-        """ Create a record on the external system """
+        """Create a record on the external system"""
         if self.collection.version == "1.7":
             return self._call("%s.create" % self._magento_model, [data])
         raise NotImplementedError
 
     def write(self, external_id, data):
-        """ Update records on the external system """
+        """Update records on the external system"""
         if self.collection.version == "1.7":
             return self._call(
                 "%s.update" % self._magento_model, [int(external_id), data]
@@ -400,13 +398,13 @@ class GenericAdapter(AbstractComponent):
         raise NotImplementedError
 
     def delete(self, external_id):
-        """ Delete a record on the external system """
+        """Delete a record on the external system"""
         if self.collection.version == "1.7":
             return self._call("%s.delete" % self._magento_model, [int(external_id)])
         raise NotImplementedError
 
     def admin_url(self, external_id):
-        """ Return the URL in the Magento admin for a record """
+        """Return the URL in the Magento admin for a record"""
         backend = self.backend_record
         url = backend.admin_location
         if not url:

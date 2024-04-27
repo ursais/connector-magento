@@ -15,7 +15,7 @@ _logger = logging.getLogger(__name__)
 
 
 class MagentoAccountInvoice(models.Model):
-    """ Binding Model for the Magento Invoice """
+    """Binding Model for the Magento Invoice"""
 
     _name = "magento.account.move"
     _inherit = "magento.binding"
@@ -42,7 +42,7 @@ class MagentoAccountInvoice(models.Model):
     @job(default_channel="root.magento")
     @related_action(action="related_action_unwrap_binding")
     def export_record(self):
-        """ Export a validated or paid invoice. """
+        """Export a validated or paid invoice."""
         self.ensure_one()
         with self.backend_id.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")
@@ -50,7 +50,7 @@ class MagentoAccountInvoice(models.Model):
 
 
 class AccountInvoice(models.Model):
-    """ Adds the ``one2many`` relation to the Magento bindings
+    """Adds the ``one2many`` relation to the Magento bindings
     (``magento_bind_ids``)
     """
 
@@ -64,7 +64,7 @@ class AccountInvoice(models.Model):
 
 
 class AccountInvoiceAdapter(Component):
-    """ Backend Adapter for the Magento Invoice """
+    """Backend Adapter for the Magento Invoice"""
 
     _name = "magento.invoice.adapter"
     _inherit = "magento.adapter"
@@ -89,7 +89,7 @@ class AccountInvoiceAdapter(Component):
                 raise
 
     def create(self, order_increment_id, items, comment, email, include_comment):
-        """ Create a record on the external system """
+        """Create a record on the external system"""
         # pylint: disable=method-required-super
         if self.collection.version == "1.7":
             return self._call(
@@ -111,7 +111,7 @@ class AccountInvoiceAdapter(Component):
         )
 
     def search_read(self, filters=None, order_id=None):
-        """ Search records according to some criterias
+        """Search records according to some criterias
         and returns their information
 
         :param order_id: 'order_id' field of the magento sale order, this

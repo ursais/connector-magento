@@ -52,8 +52,7 @@ class MagentoTrackingExporter(Component):
             )
 
     def _check_allowed_carrier(self, binding, external_id):
-        """ Magento2 API does not allow to fetch the list of allowed carriers.
-        """
+        """Magento2 API does not allow to fetch the list of allowed carriers."""
         if self.collection.version == "2.0":
             return
         allowed_carriers = self.backend_adapter.get_carriers(external_id)
@@ -78,7 +77,7 @@ class MagentoTrackingExporter(Component):
             )
 
     def run(self, binding):
-        """ Export the tracking number of a picking to Magento """
+        """Export the tracking number of a picking to Magento"""
         # verify the picking is done + magento id exists
         carrier = binding.carrier_id
         if not carrier:

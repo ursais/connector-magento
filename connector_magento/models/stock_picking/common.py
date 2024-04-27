@@ -40,7 +40,7 @@ class MagentoStockPicking(models.Model):
     @job(default_channel="root.magento")
     @related_action(action="related_action_unwrap_binding")
     def export_tracking_number(self):
-        """ Export the tracking number of a delivery order. """
+        """Export the tracking number of a delivery order."""
         self.ensure_one()
         with self.backend_id.work_on(self._name) as work:
             exporter = work.component(usage="tracking.exporter")
@@ -49,7 +49,7 @@ class MagentoStockPicking(models.Model):
     @job(default_channel="root.magento")
     @related_action(action="related_action_unwrap_binding")
     def export_picking_done(self, with_tracking=True):
-        """ Export a complete or partial delivery order. """
+        """Export a complete or partial delivery order."""
         # with_tracking is True to keep a backward compatibility (jobs that
         # are pending and miss this argument will behave the same, but
         # it should be called with True only if the carrier_tracking_ref
@@ -95,7 +95,7 @@ class StockPickingAdapter(Component):
                 raise
 
     def create(self, order_id, items, comment, email, include_comment):
-        """ Create a record on the external system """
+        """Create a record on the external system"""
         # pylint: disable=method-required-super
         return self._call(
             "%s.create" % self._magento_model,
@@ -103,7 +103,7 @@ class StockPickingAdapter(Component):
         )
 
     def add_tracking_number(self, *arguments):
-        """ Add new tracking number.
+        """Add new tracking number.
 
         In the case of Magento 1.x, arguments is a list consisting of
         * external_id: shipment increment id
@@ -119,7 +119,7 @@ class StockPickingAdapter(Component):
         return self._call("%s.addTrack" % self._magento_model, arguments)
 
     def get_carriers(self, external_id):
-        """ Get the list of carrier codes allowed for the shipping.
+        """Get the list of carrier codes allowed for the shipping.
 
         :param external_id: order increment id
         :rtype: list

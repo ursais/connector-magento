@@ -6,7 +6,7 @@ from odoo.addons.component.core import Component
 
 
 class MagentoModelBinder(Component):
-    """ Bind records and give odoo/magento ids correspondence
+    """Bind records and give odoo/magento ids correspondence
 
     Binding models are models called ``magento.{normal_model}``,
     like ``magento.res.partner`` or ``magento.product.product``.

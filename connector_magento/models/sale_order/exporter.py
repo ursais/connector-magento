@@ -24,7 +24,7 @@ class StateExporter(Component):
     }
 
     def run(self, binding, allowed_states=None, comment=None, notify=False):
-        """ Change the status of the sales order on Magento.
+        """Change the status of the sales order on Magento.
 
         It adds a comment on Magento with a status.
         Sales orders on Magento have a state and a status.

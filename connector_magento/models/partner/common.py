@@ -34,7 +34,7 @@ class ResPartner(models.Model):
 
     @api.model
     def _address_fields(self):
-        """ Returns the list of address fields that are synced from the
+        """Returns the list of address fields that are synced from the
         parent.
 
         """
@@ -132,7 +132,9 @@ class MagentoAddress(models.Model):
         store=True,
         readonly=True,
     )
-    is_magento_order_address = fields.Boolean(string="Address from a Magento Order",)
+    is_magento_order_address = fields.Boolean(
+        string="Address from a Magento Order",
+    )
 
     _sql_constraints = [
         (
@@ -144,7 +146,6 @@ class MagentoAddress(models.Model):
 
 
 class PartnerAdapter(Component):
-
     _name = "magento.partner.adapter"
     _inherit = "magento.adapter"
     _apply_on = "magento.res.partner"
@@ -173,7 +174,7 @@ class PartnerAdapter(Component):
     def search(
         self, filters=None, from_date=None, to_date=None, magento_website_ids=None
     ):
-        """ Search records according to some criteria and return a
+        """Search records according to some criteria and return a
         list of ids
 
         :rtype: list
@@ -199,7 +200,6 @@ class PartnerAdapter(Component):
 
 
 class AddressAdapter(Component):
-
     _name = "magento.address.adapter"
     _inherit = "magento.adapter"
     _apply_on = "magento.address"
@@ -207,7 +207,7 @@ class AddressAdapter(Component):
     _magento_model = "customer_address"
 
     def search(self, filters=None):
-        """ Search records according to some criterias
+        """Search records according to some criterias
         and returns a list of ids
 
         :rtype: list
@@ -220,6 +220,6 @@ class AddressAdapter(Component):
         ]
 
     def create(self, customer_id, data):
-        """ Create a record on the external system """
+        """Create a record on the external system"""
         # pylint: disable=method-required-super
         return self._call("%s.create" % self._magento_model, [customer_id, data])

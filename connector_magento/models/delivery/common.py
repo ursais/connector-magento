@@ -7,7 +7,7 @@ from odoo import api, fields, models
 
 # TODO magento.delivery.carrier & move specific stuff
 class DeliveryCarrier(models.Model):
-    """ Adds Magento specific fields to ``delivery.carrier``
+    """Adds Magento specific fields to ``delivery.carrier``
 
     ``magento_code``
 
@@ -31,16 +31,21 @@ class DeliveryCarrier(models.Model):
 
     _inherit = "delivery.carrier"
 
-    magento_code = fields.Char(string="Magento Carrier Code", required=False,)
+    magento_code = fields.Char(
+        string="Magento Carrier Code",
+        required=False,
+    )
     magento_tracking_title = fields.Char(
-        string="Magento Tracking Title", required=False,
+        string="Magento Tracking Title",
+        required=False,
     )
     # in Magento, the delivery method is something like that:
     # tntmodule2_tnt_basic
     # where the first part before the first _ is always the carrier code
     # in this example, the carrier code is tntmodule2
     magento_carrier_code = fields.Char(
-        compute="_compute_carrier_code", string="Magento Base Carrier Code",
+        compute="_compute_carrier_code",
+        string="Magento Base Carrier Code",
     )
     magento_export_tracking = fields.Boolean(
         string="Export tracking numbers", default=True

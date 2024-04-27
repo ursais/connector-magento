@@ -7,14 +7,14 @@ from odoo.addons.component.core import AbstractComponent
 
 
 class MagentoDeleter(AbstractComponent):
-    """ Base deleter for Magento """
+    """Base deleter for Magento"""
 
     _name = "magento.exporter.deleter"
     _inherit = "base.deleter"
     _usage = "record.exporter.deleter"
 
     def run(self, external_id):
-        """ Run the synchronization, delete the record on Magento
+        """Run the synchronization, delete the record on Magento
 
         :param external_id: identifier of the record to delete
         """

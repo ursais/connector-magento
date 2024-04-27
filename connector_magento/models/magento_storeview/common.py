@@ -119,7 +119,7 @@ class StoreviewAdapter(Component):
     _admin_path = "system_store/editStore/store_id/{id}"
 
     def read(self, external_id, attributes=None):
-        """ Conveniently split into two separate APIs in 2.0
+        """Conveniently split into two separate APIs in 2.0
         :rtype: dict
         """
         if self.collection.version == "2.0":

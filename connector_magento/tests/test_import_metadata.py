@@ -6,7 +6,7 @@ from .common import MagentoTestCase, recorder
 
 class TestImportMetadata(MagentoTestCase):
     def test_import_backend(self):
-        """ Synchronize initial metadata """
+        """Synchronize initial metadata"""
         with recorder.use_cassette("metadata"):
             self.backend.synchronize_metadata()
 

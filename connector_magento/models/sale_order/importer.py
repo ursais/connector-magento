@@ -32,7 +32,7 @@ class SaleOrderBatchImporter(Component):
         )
 
     def run(self, filters=None):
-        """ Run the synchronization """
+        """Run the synchronization"""
         if filters is None:
             filters = {}
         filters["state"] = {"neq": "canceled"}
@@ -59,18 +59,18 @@ class SaleImportRule(Component):
     _usage = "sale.import.rule"
 
     def _rule_always(self, record, method):
-        """ Always import the order """
+        """Always import the order"""
         return True
 
     def _rule_never(self, record, method):
-        """ Never import the order """
+        """Never import the order"""
         raise NothingToDoJob(
             "Orders with payment method %s "
             "are never imported." % record["payment"]["method"]
         )
 
     def _rule_authorized(self, record, method):
-        """ Import the order only if payment has been authorized. """
+        """Import the order only if payment has been authorized."""
         if not record.get("payment", {}).get("base_amount_authorized"):
             raise OrderImportRuleRetry(
                 "The order has not been authorized.\n"
@@ -78,8 +78,8 @@ class SaleImportRule(Component):
             )
 
     def _rule_paid(self, record, method):
-        """ Import the order only if it has received a payment, or if there
-        is nothing to pay in the first place. """
+        """Import the order only if it has received a payment, or if there
+        is nothing to pay in the first place."""
         amount_paid = record.get("payment", {}).get("amount_paid") or 0
         if record["grand_total"] and amount_paid <= 0:
             raise OrderImportRuleRetry(
@@ -94,7 +94,7 @@ class SaleImportRule(Component):
     }
 
     def _rule_global(self, record, method):
-        """ Rule always executed, whichever is the selected rule """
+        """Rule always executed, whichever is the selected rule"""
         # the order has been canceled since the job has been created
         order_id = record["increment_id"]
         if record["state"] == "canceled":
@@ -120,7 +120,8 @@ class SaleImportRule(Component):
         """
         payment_method = record["payment"]["method"]
         method = self.env["account.payment.mode"].search(
-            [("name", "=", payment_method)], limit=1,
+            [("name", "=", payment_method)],
+            limit=1,
         )
         if not method:
             raise FailedJobError(
@@ -137,7 +138,6 @@ class SaleImportRule(Component):
 
 
 class SaleOrderImportMapper(Component):
-
     _name = "magento.sale.order.mapper"
     _inherit = "magento.import.mapper"
     _apply_on = "magento.sale.order"
@@ -289,7 +289,7 @@ class SaleOrderImportMapper(Component):
 
     @mapping
     def pricelist_id(self, record):
-        """ Assign a pricelist in the correct currency if necessary. """
+        """Assign a pricelist in the correct currency if necessary."""
         currency = record["order_currency_code"]
         partner = self.binder_for("magento.res.partner").to_internal(
             record["customer_id"], unwrap=True
@@ -308,7 +308,8 @@ class SaleOrderImportMapper(Component):
     def payment(self, record):
         record_method = record["payment"]["method"]
         method = self.env["account.payment.mode"].search(
-            [["name", "=", record_method]], limit=1,
+            [["name", "=", record_method]],
+            limit=1,
         )
         assert method, (
             "method %s should exist because the import fails "
@@ -328,7 +329,8 @@ class SaleOrderImportMapper(Component):
             return
 
         carrier = self.env["delivery.carrier"].search(
-            [("magento_code", "=", ifield)], limit=1,
+            [("magento_code", "=", ifield)],
+            limit=1,
         )
         if carrier:
             result = {"carrier_id": carrier.id}
@@ -516,14 +518,14 @@ class SaleOrderImporter(Component):
         self._link_parent_orders(binding)
 
     def _get_storeview(self, record):
-        """ Return the tax inclusion setting for the appropriate storeview """
+        """Return the tax inclusion setting for the appropriate storeview"""
         storeview_binder = self.binder_for("magento.storeview")
         # we find storeview_id in store_id!
         # (http://www.magentocommerce.com/bug-tracking/issue?issue=15886)
         return storeview_binder.to_internal(record["store_id"])
 
     def _get_magento_data(self):
-        """ Return the raw Magento data for ``self.external_id`` """
+        """Return the raw Magento data for ``self.external_id``"""
         record = super(SaleOrderImporter, self)._get_magento_data()
         # sometimes we don't have website_id...
         # we fix the record!
@@ -620,7 +622,6 @@ class SaleOrderImporter(Component):
             )
             partner_binder.bind(guest_customer_id, partner_binding)
         else:
-
             # we always update the customer when importing an order
             importer = self.component(
                 usage="record.importer", model_name="magento.res.partner"
@@ -710,7 +711,7 @@ class SaleOrderImporter(Component):
             partner_invoice_id=self.partner_invoice_id,
             partner_shipping_id=self.partner_shipping_id,
             storeview=storeview,
-            **kwargs
+            **kwargs,
         )
 
     def _update_data(self, map_record, **kwargs):
@@ -723,7 +724,7 @@ class SaleOrderImporter(Component):
             partner_invoice_id=self.partner_invoice_id,
             partner_shipping_id=self.partner_shipping_id,
             storeview=storeview,
-            **kwargs
+            **kwargs,
         )
 
     def _import_dependencies(self):
@@ -742,7 +743,6 @@ class SaleOrderImporter(Component):
 
 
 class SaleOrderLineImportMapper(Component):
-
     _name = "magento.sale.order.line.mapper"
     _inherit = "magento.import.mapper"
     _apply_on = "magento.sale.order.line"
@@ -827,8 +827,8 @@ class SaleOrderLineImportMapper(Component):
 
     @mapping
     def price(self, record):
-        """ In Magento 2, base_row_total_incl_tax may not be present
-        if no taxes apply """
+        """In Magento 2, base_row_total_incl_tax may not be present
+        if no taxes apply"""
         discount_amount = float(record["base_discount_amount"] or 0)
         base_row_total = float(record["base_row_total"] or 0.0)
         base_row_total_incl_tax = (

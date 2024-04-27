@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 
 
 class PartnerBatchImporter(Component):
-    """ Import the Magento Partners.
+    """Import the Magento Partners.
 
     For every partner in the list, a delayed job is created.
     """
@@ -28,7 +28,7 @@ class PartnerBatchImporter(Component):
     _apply_on = "magento.res.partner"
 
     def run(self, filters=None):
-        """ Run the synchronization """
+        """Run the synchronization"""
         from_date = filters.pop("from_date", None)
         to_date = filters.pop("to_date", None)
         magento_website_ids = [filters.pop("magento_website_id")]
@@ -72,7 +72,7 @@ class PartnerImportMapper(Component):
 
     @mapping
     def names(self, record):
-        """ Middlename not always present in Magento 2 """
+        """Middlename not always present in Magento 2"""
         # TODO Check on first run
         parts = [
             part
@@ -143,8 +143,8 @@ class PartnerImportMapper(Component):
     @only_create
     @mapping
     def odoo_id(self, record):
-        """ Will bind the customer on a existing partner
-        with the same email """
+        """Will bind the customer on a existing partner
+        with the same email"""
         partner = self.env["res.partner"].search(
             [
                 ("email", "=", record["email"]),
@@ -165,12 +165,12 @@ class PartnerImporter(Component):
     _apply_on = "magento.res.partner"
 
     def _import_dependencies(self):
-        """ Import the dependencies for the record"""
+        """Import the dependencies for the record"""
         record = self.magento_record
         self._import_dependency(record["group_id"], "magento.res.partner.category")
 
     def _after_import(self, partner_binding):
-        """ Import the addresses """
+        """Import the addresses"""
         book = self.component(usage="address.book", model_name="magento.address")
         book.import_addresses(self.external_id, partner_binding.id)
 
@@ -181,31 +181,31 @@ AddressInfos = namedtuple(
 
 
 class PartnerAddressBook(Component):
-    """ Import all addresses from the address book of a customer.
+    """Import all addresses from the address book of a customer.
 
-        This class is responsible to define which addresses should
-        be imported and how (merge with the partner or not...).
-        Then, it delegate the import to the appropriate importer.
+    This class is responsible to define which addresses should
+    be imported and how (merge with the partner or not...).
+    Then, it delegate the import to the appropriate importer.
 
-        This is really intricate. The datamodel are different between
-        Magento and Odoo and we have many uses cases to cover.
+    This is really intricate. The datamodel are different between
+    Magento and Odoo and we have many uses cases to cover.
 
-        The first thing is that:
-            - we do not import companies and individuals the same manner
-            - we do not know if an account is a company -> we assume that
-              if we found something in the company field of the billing
-              address, the whole account is a company.
+    The first thing is that:
+        - we do not import companies and individuals the same manner
+        - we do not know if an account is a company -> we assume that
+          if we found something in the company field of the billing
+          address, the whole account is a company.
 
-        Differences:
-            - Individuals: we merge the billing address with the partner,
-              so we'll end with 1 entity if the customer has 1 address
-            - Companies: we never merge the addresses with the partner,
-              but we use the company name of the billing address as name
-              of the partner. We also copy the address informations from
-              the billing address as default values.
+    Differences:
+        - Individuals: we merge the billing address with the partner,
+          so we'll end with 1 entity if the customer has 1 address
+        - Companies: we never merge the addresses with the partner,
+          but we use the company name of the billing address as name
+          of the partner. We also copy the address informations from
+          the billing address as default values.
 
-        More information on:
-        https://bugs.launchpad.net/openerp-connector/+bug/1193281
+    More information on:
+    https://bugs.launchpad.net/openerp-connector/+bug/1193281
     """
 
     _name = "magento.address.book"
@@ -220,7 +220,7 @@ class PartnerAddressBook(Component):
             importer.run(address_id, address_infos=infos)
 
     def _read_addresses(self, magento_partner_id):
-        """ Provide addresses
+        """Provide addresses
         - Magento 1.x: read the addresses from the address repository
         - Magento 2.x: addresses are included in the partner record
         """
@@ -278,7 +278,7 @@ class PartnerAddressBook(Component):
 
 
 class BaseAddressImportMapper(AbstractComponent):
-    """ Defines the base mappings for the imports
+    """Defines the base mappings for the imports
     in ``res.partner`` (state, country, ...)
     """
 
@@ -302,7 +302,8 @@ class BaseAddressImportMapper(AbstractComponent):
             return
 
         state = self.env["res.country.state"].search(
-            [("name", "=ilike", region)], limit=1,
+            [("name", "=ilike", region)],
+            limit=1,
         )
         if state:
             return {"state_id": state.id}
@@ -312,14 +313,15 @@ class BaseAddressImportMapper(AbstractComponent):
         if not record.get("country_id"):
             return
         country = self.env["res.country"].search(
-            [("code", "=", record["country_id"])], limit=1,
+            [("code", "=", record["country_id"])],
+            limit=1,
         )
         if country:
             return {"country_id": country.id}
 
     @mapping
     def street(self, record):
-        """ 'street' can be presented as a list in Magento2 """
+        """'street' can be presented as a list in Magento2"""
         value = record["street"]
         if not value:
             return {}
@@ -337,7 +339,7 @@ class BaseAddressImportMapper(AbstractComponent):
 
     @mapping
     def title(self, record):
-        """ Prefix is optionally present in Magento 2 """
+        """Prefix is optionally present in Magento 2"""
         prefix = record.get("prefix")
         if not prefix:
             return
@@ -366,7 +368,7 @@ class BaseAddressImportMapper(AbstractComponent):
 
 
 class CompanyImportMapper(Component):
-    """ Special mapping used when we import a company.
+    """Special mapping used when we import a company.
     A company is considered as such when the billing address
     of an account has something in the 'company' field.
 
@@ -401,13 +403,12 @@ class CompanyImportMapper(Component):
 
 
 class AddressImporter(Component):
-
     _name = "magento.address.importer"
     _inherit = "magento.importer"
     _apply_on = "magento.address"
 
     def run(self, external_id, address_infos=None, force=False):
-        """ Run the synchronization """
+        """Run the synchronization"""
         if address_infos is None:
             # only possible for updates
             self.address_infos = AddressInfos(None, None, None)
@@ -416,7 +417,7 @@ class AddressImporter(Component):
         return super(AddressImporter, self).run(external_id, force=force)
 
     def _get_magento_data(self):
-        """ Return the raw Magento data for ``self.external_id`` """
+        """Return the raw Magento data for ``self.external_id``"""
         # we already read the data from the Partner Importer
         if self.address_infos.magento_record:
             return self.address_infos.magento_record
@@ -424,7 +425,7 @@ class AddressImporter(Component):
             return super(AddressImporter, self)._get_magento_data()
 
     def _define_partner_relationship(self, data):
-        """ Link address with partner or parent company. """
+        """Link address with partner or parent company."""
         partner_binding_id = self.address_infos.partner_binding_id
         assert partner_binding_id, (
             "AdressInfos are required for creation of " "a new address."
@@ -448,7 +449,6 @@ class AddressImporter(Component):
 
 
 class AddressImportMapper(Component):
-
     _name = "magento.address.import.mapper"
     _inherit = "magento.base.address.import.mapper"
     _apply_on = "magento.address"

@@ -7,7 +7,7 @@ from odoo.addons.queue_job.job import job, related_action
 
 
 class MagentoBinding(models.AbstractModel):
-    """ Abstract Model for the Bindings.
+    """Abstract Model for the Bindings.
 
     All the models used as bindings between Magento and Odoo
     (``magento.res.partner``, ``magento.product.product``, ...) should
@@ -39,7 +39,7 @@ class MagentoBinding(models.AbstractModel):
     @job(default_channel="root.magento")
     @api.model
     def import_batch(self, backend, filters=None):
-        """ Prepare the import of records modified on Magento """
+        """Prepare the import of records modified on Magento"""
         if filters is None:
             filters = {}
         with backend.work_on(self._name) as work:
@@ -50,7 +50,7 @@ class MagentoBinding(models.AbstractModel):
     @related_action(action="related_action_magento_link")
     @api.model
     def import_record(self, backend, external_id, force=False):
-        """ Import a Magento record """
+        """Import a Magento record"""
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
             return importer.run(external_id, force=force)
@@ -58,7 +58,7 @@ class MagentoBinding(models.AbstractModel):
     @job(default_channel="root.magento")
     @related_action(action="related_action_unwrap_binding")
     def export_record(self, fields=None):
-        """ Export a record on Magento """
+        """Export a record on Magento"""
         self.ensure_one()
         with self.backend_id.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")
@@ -67,7 +67,7 @@ class MagentoBinding(models.AbstractModel):
     @job(default_channel="root.magento")
     @related_action(action="related_action_magento_link")
     def export_delete_record(self, backend, external_id):
-        """ Delete a record on Magento """
+        """Delete a record on Magento"""
         with backend.work_on(self._name) as work:
             deleter = work.component(usage="record.exporter.deleter")
             return deleter.run(external_id)

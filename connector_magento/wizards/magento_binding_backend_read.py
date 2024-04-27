@@ -16,7 +16,6 @@ _logger = logging.getLogger(__name__)
 
 
 class MagentoBindingBackendRead(models.TransientModel):
-
     _name = "magento.binding.backend.read"
     _description = "Magento Generic Object Reader Wizard"
 
@@ -61,11 +60,12 @@ class MagentoBindingBackendRead(models.TransientModel):
             _logger.info(
                 "No component registry for database %s. "
                 "Probably because the Odoo registry has not been built yet.",
-                self.env.cr.dbname
+                self.env.cr.dbname,
             )
             return []
         component_classes = components_registry.lookup(
-            collection_name="magento.backend", usage="backend.adapter",
+            collection_name="magento.backend",
+            usage="backend.adapter",
         )
         ret = []
         for component_class in component_classes:

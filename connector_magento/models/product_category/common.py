@@ -142,7 +142,7 @@ class ProductCategoryAdapter(Component):
                 "%s.move" % self._magento_model, [categ_id, parent_id, after_categ_id]
             )
         return self._call(
-            "{}/{}/move".format(self._magento2_model, categ_id),
+            f"{self._magento2_model}/{categ_id}/move",
             {"parent_id": parent_id, "after_id": after_categ_id},
         )
 

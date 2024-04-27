@@ -8,12 +8,15 @@ from .common import Magento2SyncTestCase, recorder
 
 
 class TestExportPicking(Magento2SyncTestCase):
-    """ Test the export of pickings to Magento """
+    """Test the export of pickings to Magento"""
 
     def setUp(self):
         super(TestExportPicking, self).setUp()
         # import a sales order
-        self.order_binding = self._import_record("magento.sale.order", "12",)
+        self.order_binding = self._import_record(
+            "magento.sale.order",
+            "12",
+        )
         self.order_binding.ignore_exception = True
         # generate sale's picking
         self.order_binding.odoo_id.action_confirm()
@@ -50,7 +53,7 @@ class TestExportPicking(Magento2SyncTestCase):
         magento_shop.send_picking_done_mail = True
 
     def test_export_complete_picking_trigger(self):
-        """ Trigger export of a complete picking """
+        """Trigger export of a complete picking"""
         self.picking.action_assign()
         with self.mock_with_delay() as (delayable_cls, delayable):
             # Deliver the entire picking, a 'magento.stock.picking'
@@ -78,7 +81,7 @@ class TestExportPicking(Magento2SyncTestCase):
             delayable.export_picking_done.assert_called_with(with_tracking=False)
 
     def test_export_complete_picking_job(self):
-        """ Exporting a complete picking """
+        """Exporting a complete picking"""
         self.picking.action_assign()
         with self.mock_with_delay():
             # Deliver the entire picking, a 'magento.stock.picking'
@@ -118,7 +121,7 @@ class TestExportPicking(Magento2SyncTestCase):
         self.assertEqual(picking_binding.external_id, "3")
 
     def test_export_partial_picking_trigger(self):
-        """ Trigger export of a partial picking """
+        """Trigger export of a partial picking"""
         # Prepare a partial picking
         # The sale order contains 2 lines with 1 product each
         self.picking.action_assign()
@@ -161,7 +164,7 @@ class TestExportPicking(Magento2SyncTestCase):
             delayable.export_picking_done.assert_called_with(with_tracking=False)
 
     def test_export_partial_picking_job(self):
-        """ Exporting a partial picking """
+        """Exporting a partial picking"""
         # Prepare a partial picking
         # The sale order contains 2 lines with 1 product each
         self.picking.action_assign()
@@ -201,7 +204,7 @@ class TestExportPicking(Magento2SyncTestCase):
         self.assertEqual(picking_binding.external_id, "5")
 
     def test_export_tracking_after_done_trigger(self):
-        """ Trigger export of a tracking number """
+        """Trigger export of a tracking number"""
         self.picking.action_assign()
 
         with self.mock_with_delay():
@@ -225,7 +228,7 @@ class TestExportPicking(Magento2SyncTestCase):
             delayable.export_tracking_number.assert_called_with()
 
     def test_export_tracking_after_done_job(self):
-        """ Job export of a tracking number """
+        """Job export of a tracking number"""
         self.picking.action_assign()
 
         with self.mock_with_delay():

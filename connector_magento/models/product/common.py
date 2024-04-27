@@ -38,7 +38,7 @@ class MagentoProductProduct(models.Model):
             ("configurable", "Configurable Product"),
             ("virtual", "Virtual Product"),
             ("downloadable", "Downloadable Product"),
-            ("giftcard", "Giftcard")
+            ("giftcard", "Giftcard"),
             # XXX activate when supported
             # ('grouped', 'Grouped Product'),
             # ('bundle', 'Bundle Product'),
@@ -107,14 +107,14 @@ class MagentoProductProduct(models.Model):
     @job(default_channel="root.magento")
     @related_action(action="related_action_unwrap_binding")
     def export_inventory(self, fields=None):
-        """ Export the inventory configuration and quantity of a product. """
+        """Export the inventory configuration and quantity of a product."""
         self.ensure_one()
         with self.backend_id.work_on(self._name) as work:
             exporter = work.component(usage="product.inventory.exporter")
             return exporter.run(self, fields)
 
     def recompute_magento_qty(self):
-        """ Check if the quantity in the stock location configured
+        """Check if the quantity in the stock location configured
         on the backend has changed since the last export.
 
         If it has changed, write the updated quantity on `magento_qty`.
@@ -134,7 +134,7 @@ class MagentoProductProduct(models.Model):
         return True
 
     def _recompute_magento_qty_backend(self, backend, products, read_fields=None):
-        """ Recompute the products quantity for one backend.
+        """Recompute the products quantity for one backend.
 
         If field names are passed in ``read_fields`` (as a list), they
         will be read in the product that is used in
@@ -165,7 +165,7 @@ class MagentoProductProduct(models.Model):
                     self.browse(product["id"]).magento_qty = new_qty
 
     def _magento_qty(self, product, backend, location, stock_field):
-        """ Return the current quantity for one product.
+        """Return the current quantity for one product.
 
         Can be inherited to change the way the quantity is computed,
         according to a backend / location.
@@ -178,8 +178,8 @@ class MagentoProductProduct(models.Model):
 
     @api.model
     def _get_admin_path(self, backend, external_id):
-        """ In Magento2, we can only link to the product when we have already
-        imported it """
+        """In Magento2, we can only link to the product when we have already
+        imported it"""
         if backend.version == "1.7":
             return "/{model}/edit/id/{id}"
         magento_internal_id = self.search(
@@ -231,7 +231,7 @@ class ProductProductAdapter(Component):
                 raise
 
     def search(self, filters=None, from_date=None, to_date=None):
-        """ Search records according to some criteria
+        """Search records according to some criteria
         and returns a list of ids
 
         :rtype: list
@@ -256,7 +256,7 @@ class ProductProductAdapter(Component):
         return super(ProductProductAdapter, self).search(filters=filters)
 
     def read(self, external_id, storeview_id=None, attributes=None):
-        """ Returns the information of a record
+        """Returns the information of a record
 
         :rtype: dict
         """
@@ -275,7 +275,7 @@ class ProductProductAdapter(Component):
         return res
 
     def write(self, external_id, data, storeview_id=None):
-        """ Update records on the external system """
+        """Update records on the external system"""
         # pylint: disable=method-required-super
         # XXX actually only ol_catalog_product.update works
         # the PHP connector maybe breaks the catalog_product.update
@@ -287,8 +287,8 @@ class ProductProductAdapter(Component):
         raise NotImplementedError  # TODO
 
     def get_images(self, external_id, storeview_id=None, data=None):
-        """ Fetch image metadata either by querying Magento 1.x, or extracting
-        it from the product data for Magento 2.x """
+        """Fetch image metadata either by querying Magento 1.x, or extracting
+        it from the product data for Magento 2.x"""
         if self.collection.version == "1.7":
             return self._call(
                 "product_media.list", [int(external_id), storeview_id, "id"]
@@ -321,8 +321,8 @@ class ProductProductAdapter(Component):
         raise NotImplementedError  # TODO
 
     def update_inventory(self, external_id, data):
-        """ Update the default stock. For Magento2, first retrieve the stock
-        item that applies to this stock for the product. """
+        """Update the default stock. For Magento2, first retrieve the stock
+        item that applies to this stock for the product."""
         if self.collection.version == "1.7":
             # product_stock.update is too slow
             return self._call(
@@ -345,7 +345,7 @@ class ProductProductAdapter(Component):
                 % external_id
             )
         self._call(
-            "products/{}/stockItems/{}".format(self.escape(external_id), item_id),
+            f"products/{self.escape(external_id)}/stockItems/{item_id}",
             data,
             http_method="put",
         )

@@ -8,7 +8,7 @@ from .common import Magento2SyncTestCase, recorder
 class TestImportProductCategory(Magento2SyncTestCase):
     @recorder.use_cassette
     def test_import_product_category(self):
-        """ Import of a product category """
+        """Import of a product category"""
         backend_id = self.backend.id
 
         self.env["magento.product.category"].import_record(self.backend, "1")
@@ -19,7 +19,7 @@ class TestImportProductCategory(Magento2SyncTestCase):
 
     @recorder.use_cassette
     def test_import_product_category_with_gap(self):
-        """ Import of a product category when parent categories are missing """
+        """Import of a product category when parent categories are missing"""
         backend_id = self.backend.id
 
         self.env["magento.product.category"].import_record(self.backend, "41")

@@ -20,7 +20,7 @@ class StoreImportMapper(Component):
 
 
 class StoreImporter(Component):
-    """ Import one Magento Store (create a sale.shop via _inherits) """
+    """Import one Magento Store (create a sale.shop via _inherits)"""
 
     _name = "magento.store.importer"
     _inherit = "magento.importer"

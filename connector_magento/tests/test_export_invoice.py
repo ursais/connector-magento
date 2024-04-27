@@ -8,7 +8,7 @@ from .common import MagentoSyncTestCase, recorder
 
 
 class TestExportInvoice(MagentoSyncTestCase):
-    """ Test the export of an invoice to Magento """
+    """Test the export of an invoice to Magento"""
 
     def setUp(self):
         super(TestExportInvoice, self).setUp()
@@ -31,7 +31,7 @@ class TestExportInvoice(MagentoSyncTestCase):
         self.invoice = invoice_ids
 
     def test_export_invoice_on_validate_trigger(self):
-        """ Trigger export of an invoice: when it is validated """
+        """Trigger export of an invoice: when it is validated"""
         # we setup the stores so they export the invoices as soon
         # as they are validated (open)
         self.stores.write({"create_invoice_on": "open"})
@@ -55,7 +55,7 @@ class TestExportInvoice(MagentoSyncTestCase):
             self.assertEqual(0, delayable_cls.call_count)
 
     def test_export_invoice_on_paid_trigger(self):
-        """ Trigger export of an invoice: when it is paid """
+        """Trigger export of an invoice: when it is paid"""
         # we setup the stores so they export the invoices as soon
         # as they are validated (open)
         self.stores.write({"create_invoice_on": "paid"})
@@ -81,7 +81,7 @@ class TestExportInvoice(MagentoSyncTestCase):
             delayable.export_record.assert_called_with()
 
     def test_export_invoice_on_payment_mode_validate_trigger(self):
-        """ Exporting an invoice: when it is validated with payment mode """
+        """Exporting an invoice: when it is validated with payment mode"""
         # we setup the stores so they export the invoices as soon
         # as they are validated (open)
         self.payment_mode.write({"create_invoice_on": "open"})
@@ -106,7 +106,7 @@ class TestExportInvoice(MagentoSyncTestCase):
             self.assertEqual(0, delayable_cls.call_count)
 
     def test_export_invoice_on_payment_mode_paid_trigger(self):
-        """ Exporting an invoice: when it is paid on payment method """
+        """Exporting an invoice: when it is paid on payment method"""
         # we setup the stores so they export the invoices as soon
         # as they are validated (open)
         self.payment_mode.write({"create_invoice_on": "paid"})
@@ -153,7 +153,7 @@ class TestExportInvoice(MagentoSyncTestCase):
         payment.post()
 
     def test_export_invoice_job(self):
-        """ Exporting an invoice: call towards the Magento API """
+        """Exporting an invoice: call towards the Magento API"""
         # we setup the payment method so it exports the invoices as soon
         # as they are validated (open)
         self.payment_mode.write({"create_invoice_on": "open"})
@@ -166,7 +166,6 @@ class TestExportInvoice(MagentoSyncTestCase):
         self.assertEqual(len(invoice_binding), 1)
 
         with recorder.use_cassette("test_export_invoice") as cassette:
-
             invoice_binding.export_record()
 
         # 1. login, 2. sales_order_invoice.create, 3. endSession

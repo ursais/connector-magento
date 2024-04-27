@@ -5,7 +5,7 @@ from ..test_import_product_image import TestImportProductImage
 
 
 class TestImportProductImageMagento2(TestImportProductImage):
-    """ Test the imports of the image of the products. """
+    """Test the imports of the image of the products."""
 
     def setUp(self):
         super(TestImportProductImageMagento2, self).setUp()

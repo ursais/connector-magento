@@ -2,7 +2,7 @@
 # Copyright 2020 Opener B.V.
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html)
 
-import mock
+from unittest import mock
 
 from odoo import exceptions
 
@@ -10,7 +10,7 @@ from .common import Magento2SyncTestCase
 
 
 class TestRelatedActionStorage(Magento2SyncTestCase):
-    """ Test related actions on stored jobs """
+    """Test related actions on stored jobs"""
 
     def setUp(self):
         super(TestRelatedActionStorage, self).setUp()
@@ -18,7 +18,7 @@ class TestRelatedActionStorage(Magento2SyncTestCase):
         self.QueueJob = self.env["queue.job"]
 
     def test_unwrap_binding(self):
-        """ Open a related action opening an unwrapped binding """
+        """Open a related action opening an unwrapped binding"""
         product = self.env.ref("product.product_product_7")
         magento_product = self.MagentoProduct.create(
             {
@@ -41,12 +41,13 @@ class TestRelatedActionStorage(Magento2SyncTestCase):
         self.assertEqual(stored.open_related_action(), expected)
 
     def test_link(self):
-        """ Open a related action opening an url on Magento.
-        It only succeeds if we already have the magento internal id. """
+        """Open a related action opening an url on Magento.
+        It only succeeds if we already have the magento internal id."""
         self.backend.write({"admin_location": "http://www.example.com/admin"})
         product = self.env.ref("product.product_product_7")
         job = self.MagentoProduct.with_delay().import_record(
-            self.backend, product.default_code,
+            self.backend,
+            product.default_code,
         )
         stored = job.db_record()
         with self.assertRaisesRegex(exceptions.UserError, "import the product before"):
@@ -70,7 +71,7 @@ class TestRelatedActionStorage(Magento2SyncTestCase):
         self.assertEqual(stored.open_related_action(), expected)
 
     def test_link_no_location(self):
-        """ Related action opening an url, admin location is not configured """
+        """Related action opening an url, admin location is not configured"""
         self.backend.write({"admin_location": False})
         job = self.MagentoProduct.with_delay().import_record(self.backend, "123456")
         stored = job.db_record()

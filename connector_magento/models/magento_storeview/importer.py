@@ -21,7 +21,7 @@ class MagentoStoreviewImportMapper(Component):
 
     @mapping
     def store_id(self, record):
-        """ Bind to 'group_id' (Magento 1.x) or 'store_group_id' """
+        """Bind to 'group_id' (Magento 1.x) or 'store_group_id'"""
         binder = self.binder_for(model="magento.store")
         group_id = record.get("store_group_id") or record["group_id"]
         binding = binder.to_internal(group_id)
@@ -35,7 +35,7 @@ class MagentoStoreviewImportMapper(Component):
 
 
 class StoreviewImporter(Component):
-    """ Import one Magento Storeview """
+    """Import one Magento Storeview"""
 
     _name = "magento.storeview.importer"
     _inherit = "magento.importer"

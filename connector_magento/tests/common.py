@@ -14,8 +14,8 @@ import urllib
 import xmlrpc.client
 from contextlib import contextmanager
 from os.path import dirname, join
+from unittest import mock
 
-import mock
 from vcr import VCR
 
 import odoo
@@ -34,7 +34,7 @@ recorder = VCR(
 )
 
 
-class MockResponseImage(object):
+class MockResponseImage:
     def __init__(self, resp_data, code=200, msg="OK"):
         self.resp_data = resp_data
         self.content = resp_data
@@ -63,7 +63,7 @@ def mock_urlopen_image():
         yield
 
 
-class MagentoHelper(object):
+class MagentoHelper:
     def __init__(self, cr, registry, model_name):
         self.cr = cr
         self.model = registry(model_name)
@@ -78,7 +78,7 @@ class MagentoHelper(object):
 
 
 class MagentoTestCase(SavepointComponentCase):
-    """ Base class - Test the imports from a Magento Mock.
+    """Base class - Test the imports from a Magento Mock.
 
     The data returned by Magento are those created for the
     demo version of Magento on a standard 1.9 version.
@@ -165,7 +165,7 @@ class MagentoTestCase(SavepointComponentCase):
         assert model_name.startswith("magento.")
         table_name = model_name.replace(".", "_")
         # strip 'magento_' from the model_name to shorted the filename
-        filename = "import_{}_{}".format(table_name[8:], str(magento_id))
+        filename = f"import_{table_name[8:]}_{str(magento_id)}"
 
         def run_import():
             with mute_logger(
@@ -192,7 +192,7 @@ class MagentoTestCase(SavepointComponentCase):
         return binding
 
     def assert_records(self, expected_records, records):
-        """ Assert that a recordset matches with expected values.
+        """Assert that a recordset matches with expected values.
 
         The expected records are a list of nametuple, the fields of the
         namedtuple must have the same name than the recordset's fields.
@@ -251,10 +251,7 @@ class MagentoTestCase(SavepointComponentCase):
             message.append(
                 " ✓ {}({})".format(
                     model_name,
-                    ", ".join(
-                        "{}: {}".format(field, getattr(record, field))
-                        for field in fields
-                    ),
+                    ", ".join(f"{field}: {getattr(record, field)}" for field in fields),
                 )
             )
         for expected in not_found:
@@ -262,10 +259,7 @@ class MagentoTestCase(SavepointComponentCase):
             message.append(
                 " - {}({})".format(
                     model_name,
-                    ", ".join(
-                        "{}: {}".format(k, v)
-                        for k, v in list(expected._asdict().items())
-                    ),
+                    ", ".join(f"{k}: {v}" for k, v in list(expected._asdict().items())),
                 )
             )
         for record in records:
@@ -273,10 +267,7 @@ class MagentoTestCase(SavepointComponentCase):
             message.append(
                 " + {}({})".format(
                     model_name,
-                    ", ".join(
-                        "{}: {}".format(field, getattr(record, field))
-                        for field in fields
-                    ),
+                    ", ".join(f"{field}: {getattr(record, field)}" for field in fields),
                 )
             )
         if not_found or records:

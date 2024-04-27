@@ -20,7 +20,7 @@ _logger = logging.getLogger(__name__)
 
 
 class ProductBatchImporter(Component):
-    """ Import the Magento Products.
+    """Import the Magento Products.
 
     For every product category in the list, a delayed job is created.
     Import from a date
@@ -31,7 +31,7 @@ class ProductBatchImporter(Component):
     _apply_on = ["magento.product.product"]
 
     def run(self, filters=None):
-        """ Run the synchronization """
+        """Run the synchronization"""
         from_date = filters.pop("from_date", None)
         to_date = filters.pop("to_date", None)
         external_ids = self.backend_adapter.search(
@@ -45,7 +45,7 @@ class ProductBatchImporter(Component):
 
 
 class CatalogImageImporter(Component):
-    """ Import images for a record.
+    """Import images for a record.
 
     Usually called from importers, in ``_after_import``.
     For instance from the products importer.
@@ -62,7 +62,7 @@ class CatalogImageImporter(Component):
         )
 
     def _sort_images(self, images):
-        """ Returns a list of images sorted by their priority.
+        """Returns a list of images sorted by their priority.
         An image with the 'image' type is the the primary one.
         The other images are sorted by their position.
 
@@ -134,7 +134,7 @@ class CatalogImageImporter(Component):
 
 # TODO: not needed, use inheritance
 class BundleImporter(Component):
-    """ Can be inherited to change the way the bundle products are
+    """Can be inherited to change the way the bundle products are
     imported.
 
     Called at the end of the import of a product.
@@ -173,7 +173,7 @@ class BundleImporter(Component):
     _usage = "product.bundle.importer"
 
     def run(self, binding, magento_record):
-        """ Import the bundle information about a product.
+        """Import the bundle information about a product.
 
         :param magento_record: product information from Magento
         """
@@ -201,7 +201,7 @@ class ProductImportMapper(Component):
     @only_create
     @mapping
     def odoo_id(self, record):
-        """ Will bind the product to an existing one with the same code """
+        """Will bind the product to an existing one with the same code"""
         product = self.env["product.product"].search(
             [("default_code", "=", record["sku"])], limit=1
         )
@@ -210,8 +210,8 @@ class ProductImportMapper(Component):
 
     @mapping
     def external_id(self, record):
-        """ Magento 2 to use sku as external id, because this is used as the
-        slug in the product REST API """
+        """Magento 2 to use sku as external id, because this is used as the
+        slug in the product REST API"""
         if self.collection.version == "2.0":
             return {"external_id": record["sku"]}
 
@@ -220,7 +220,7 @@ class ProductImportMapper(Component):
         """Check if the product is active in Magento
         and set active flag in OpenERP
         status == 1 in Magento means active.
-        Magento 2.x returns an integer, 1.x a string """
+        Magento 2.x returns an integer, 1.x a string"""
         return {"active": (record.get("status") in (1, "1"))}
 
     @mapping
@@ -237,8 +237,8 @@ class ProductImportMapper(Component):
 
     @mapping
     def website_ids(self, record):
-        """ Websites are not returned in Magento 2.x, see
-        https://github.com/magento/magento2/issues/3864 """
+        """Websites are not returned in Magento 2.x, see
+        https://github.com/magento/magento2/issues/3864"""
         website_ids = []
         binder = self.binder_for("magento.website")
         for mag_website_id in record.get("websites", []):
@@ -248,8 +248,8 @@ class ProductImportMapper(Component):
 
     @mapping
     def categories(self, record):
-        """ Fetch categories key for Magento 1.x or category_ids
-        for Magento 2.x from product record """
+        """Fetch categories key for Magento 1.x or category_ids
+        for Magento 2.x from product record"""
         mag_categories = record.get("category_ids") or record.get("categories", [])
         binder = self.binder_for("magento.product.category")
 
@@ -290,7 +290,7 @@ class ProductImporter(Component):
     _apply_on = ["magento.product.product"]
 
     def _import_bundle_dependencies(self):
-        """ Import the dependencies for a Bundle """
+        """Import the dependencies for a Bundle"""
         if self.collection.version == "1.7":
             for dependency in [
                 selection
@@ -311,7 +311,7 @@ class ProductImporter(Component):
                 self._import_dependency(dependency["sku"], "magento.product.product")
 
     def _import_dependencies(self):
-        """ Import the dependencies for the record"""
+        """Import the dependencies for the record"""
         record = self.magento_record
         # import related categories
         for mag_category_id in record.get("category_ids") or record.get(
@@ -322,7 +322,7 @@ class ProductImporter(Component):
             self._import_bundle_dependencies()
 
     def _validate_product_type(self, data):
-        """ Check if the product type is in the selection (so we can
+        """Check if the product type is in the selection (so we can
         prevent the `except_orm` and display a better error message).
         """
         product_type = data["product_type"]
@@ -336,7 +336,7 @@ class ProductImporter(Component):
             )
 
     def _must_skip(self):
-        """ Hook called right after we read the data from the backend.
+        """Hook called right after we read the data from the backend.
 
         If the method returns a message giving a reason for the
         skipping, the import will be interrupted and the message
@@ -355,7 +355,7 @@ class ProductImporter(Component):
             )
 
     def _validate_data(self, data):
-        """ Check if the values to import are correct
+        """Check if the values to import are correct
 
         Pro-actively check before the ``_create`` or
         ``_update`` if some fields are missing or invalid
@@ -382,8 +382,10 @@ class ProductImporter(Component):
         return res
 
     def _after_import(self, binding):
-        """ Hook called at the end of the import """
-        translation_importer = self.component(usage="translation.importer",)
+        """Hook called at the end of the import"""
+        translation_importer = self.component(
+            usage="translation.importer",
+        )
         translation_importer.run(
             self.external_id, binding, mapper="magento.product.product.import.mapper"
         )
@@ -437,7 +439,7 @@ class ProductInventoryExporter(Component):
         return result
 
     def run(self, binding, fields):
-        """ Export the product inventory to Magento """
+        """Export the product inventory to Magento"""
         external_id = self.binder.to_external(binding)
         data = self._get_data(binding, fields)
         self.backend_adapter.update_inventory(external_id, data)

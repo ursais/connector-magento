@@ -8,7 +8,7 @@ from .common import Magento2SyncTestCase, recorder
 
 
 class TestUpdateStockQty(Magento2SyncTestCase):
-    """ Test the export of pickings to Magento """
+    """Test the export of pickings to Magento"""
 
     def _product_change_qty(self, product, new_qty, location_id=False):
         wizard_model = self.env["stock.change.product.qty"]

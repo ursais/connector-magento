@@ -8,7 +8,7 @@ from odoo.addons.connector.exception import MappingError
 
 
 class ProductCategoryBatchImporter(Component):
-    """ Import the Magento Product Categories.
+    """Import the Magento Product Categories.
 
     For every product category in the list, a delayed job is created.
     A priority is set on the jobs according to their level to rise the
@@ -20,13 +20,13 @@ class ProductCategoryBatchImporter(Component):
     _apply_on = ["magento.product.category"]
 
     def _import_record(self, external_id, job_options=None):
-        """ Delay a job for the import """
+        """Delay a job for the import"""
         super(ProductCategoryBatchImporter, self)._import_record(
             external_id, job_options=job_options
         )
 
     def run(self, filters=None):
-        """ Run the synchronization """
+        """Run the synchronization"""
         if self.collection.version == "2.0":
             # TODO. See 8.0 version
             raise NotImplementedError
@@ -64,7 +64,7 @@ class ProductCategoryImporter(Component):
     _apply_on = ["magento.product.category"]
 
     def _import_dependencies(self):
-        """ Import the dependencies for the record"""
+        """Import the dependencies for the record"""
         record = self.magento_record
         # import parent category
         # the root category has a 0 parent_id
@@ -76,7 +76,7 @@ class ProductCategoryImporter(Component):
         return binding
 
     def _after_import(self, binding):
-        """ Hook called at the end of the import """
+        """Hook called at the end of the import"""
         translation_importer = self.component(usage="translation.importer")
         translation_importer.run(self.external_id, binding)
 

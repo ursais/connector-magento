@@ -17,7 +17,7 @@ class TestImportPartner(MagentoSyncTestCase):
 
     @recorder.use_cassette
     def test_import_partner_no_address(self):
-        """ Import an partner account without any address """
+        """Import an partner account without any address"""
         self.env["magento.res.partner"].import_record(self.backend, "139")
 
         partner = self.model.search(
@@ -30,7 +30,7 @@ class TestImportPartner(MagentoSyncTestCase):
 
     @recorder.use_cassette
     def test_import_partner_individual_1_address(self):
-        """ Import an individual (b2c) with 1 billing address
+        """Import an individual (b2c) with 1 billing address
 
         A magento customer is considered an individual if its billing
         address has an empty 'company' field
@@ -57,7 +57,7 @@ class TestImportPartner(MagentoSyncTestCase):
 
     @recorder.use_cassette
     def test_import_partner_individual_2_addresses(self):
-        """ Import an individual (b2c) with 2 addresses
+        """Import an individual (b2c) with 2 addresses
 
         A magento customer is considered an individual if its billing
         address has an empty 'company' field
@@ -97,7 +97,7 @@ class TestImportPartner(MagentoSyncTestCase):
 
     @recorder.use_cassette
     def test_import_partner_company_1_address(self):
-        """ Import an company (b2b) with 1 address
+        """Import an company (b2b) with 1 address
 
         A magento customer is considered a company if its billing
         address contains something in the 'company' field
@@ -123,7 +123,7 @@ class TestImportPartner(MagentoSyncTestCase):
 
     @recorder.use_cassette
     def test_import_partner_company_2_addresses(self):
-        """ Import an company (b2b) with 2 addresses
+        """Import an company (b2b) with 2 addresses
 
         A magento customer is considered a company if its billing
         address contains something in the 'company' field
