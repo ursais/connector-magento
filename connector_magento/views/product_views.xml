@@ -62,7 +62,7 @@
         <field name="name">magento.product.product.tree</field>
         <field name="model">magento.product.product</field>
         <field name="arch" type="xml">
-            <tree string="Magento Product">
+            <tree>
                 <field name="backend_id" />
                 <field name="product_type" />
             </tree>

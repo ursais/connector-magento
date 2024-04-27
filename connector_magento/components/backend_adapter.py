@@ -168,8 +168,8 @@ class MagentoAPI:
             return result
         except (OSError, socket.gaierror, socket.timeout) as err:
             raise NetworkRetryableError(
-                "A network error caused the failure of the job: " "%s" % err
-            )
+                "A network error caused the failure of the job: %s" % err
+            ) from err
         except xmlrpc.client.ProtocolError as err:
             if err.errcode in [
                 502,  # Bad gateway
@@ -183,7 +183,7 @@ class MagentoAPI:
                     "Error code: %d\n"
                     "Error message: %s\n"
                     % (err.url, err.headers, err.errcode, err.errmsg)
-                )
+                ) from err
             else:
                 raise
 
@@ -287,7 +287,7 @@ class GenericAdapter(AbstractComponent):
             for op in filters[field].keys():
                 assert op in operators
                 value = filters[field][op]
-                if isinstance(value, (list, set)):
+                if isinstance(value, list | set):
                     value = ",".join(value)
                 res.update(
                     {

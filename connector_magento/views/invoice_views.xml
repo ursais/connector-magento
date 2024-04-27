@@ -31,7 +31,7 @@
         <field name="name">magento.account.move.tree</field>
         <field name="model">magento.account.move</field>
         <field name="arch" type="xml">
-            <tree string="Magento Invoice" create="false" delete="false">
+            <tree create="false" delete="false">
                 <field name="backend_id" />
                 <field name="external_id" />
             </tree>

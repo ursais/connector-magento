@@ -233,7 +233,7 @@
         <field name="name">magento.backend.tree</field>
         <field name="model">magento.backend</field>
         <field name="arch" type="xml">
-            <tree string="Magento Backend">
+            <tree>
                 <field name="name" />
                 <field name="location" />
             </tree>
@@ -325,7 +325,7 @@
         <field name="name">magento.website.tree</field>
         <field name="model">magento.website</field>
         <field name="arch" type="xml">
-            <tree string="Magento Website" create="false" delete="false">
+            <tree create="false" delete="false">
                 <field name="name" />
                 <field name="backend_id" />
                 <field name="code" />
@@ -397,7 +397,7 @@
         <field name="name">magento.store.tree</field>
         <field name="model">magento.store</field>
         <field name="arch" type="xml">
-            <tree string="Magento Store" create="false" delete="false">
+            <tree create="false" delete="false">
                 <field name="name" />
                 <field name="website_id" />
             </tree>
@@ -499,7 +499,7 @@
         <field name="name">magento.storeview.tree</field>
         <field name="model">magento.storeview</field>
         <field name="arch" type="xml">
-            <tree string="Magento Storeview" create="false" delete="false">
+            <tree create="false" delete="false">
                 <field name="name" />
                 <field name="code" />
                 <field name="enabled" />

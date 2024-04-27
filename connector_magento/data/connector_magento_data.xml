@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
+
         <record id="product.decimal_discount" model="decimal.precision">
             <field name="digits">3</field>
         </record>
@@ -41,10 +41,10 @@
             <field name="code">model._scheduler_import_partners()</field>
         </record>
         <record
-            model="ir.cron"
-            id="ir_cron_import_product_categories"
-            forcecreate="True"
-        >
+        model="ir.cron"
+        id="ir_cron_import_product_categories"
+        forcecreate="True"
+    >
             <field name="name">Magento -  Import Product Categories</field>
             <field eval="False" name="active" />
             <field name="user_id" ref="base.user_root" />
@@ -69,10 +69,10 @@
             <field name="code">model._scheduler_import_product_product()</field>
         </record>
         <record
-            model="ir.cron"
-            id="ir_cron_update_product_stock_qty"
-            forcecreate="True"
-        >
+        model="ir.cron"
+        id="ir_cron_update_product_stock_qty"
+        forcecreate="True"
+    >
             <field name="name">Magento -  Update Stock Quantities</field>
             <field eval="False" name="active" />
             <field name="user_id" ref="base.user_root" />
@@ -87,8 +87,8 @@
         <record id="excep_wrong_total_amount" model="exception.rule">
             <field name="name">Total Amount differs from Magento</field>
             <field
-                name="description"
-            >The amount computed in Odoo doesn't match with the amount in Magento.
+            name="description"
+        >The amount computed in Odoo doesn't match with the amount in Magento.
 
 Cause:
 The taxes are probably different between Odoo and Magento. A fiscal position could have changed the final price.
@@ -98,16 +98,16 @@ Check your taxes and fiscal positions configuration and correct them if necessar
             <field name="sequence">30</field>
             <field name="model">sale.order</field>
             <field
-                name="code"
-            >if sale.magento_bind_ids and abs(sale.amount_total - sale.magento_bind_ids[0].total_amount) >= 0.01:
+            name="code"
+        >if sale.magento_bind_ids and abs(sale.amount_total - sale.magento_bind_ids[0].total_amount) >= 0.01:
     failed = True</field>
             <field name="active" eval="True" />
         </record>
         <record id="excep_wrong_total_amount_tax" model="exception.rule">
             <field name="name">Total Tax Amount differs from Magento</field>
             <field
-                name="description"
-            >The tax amount computed in Odoo doesn't match with the tax amount in Magento.
+            name="description"
+        >The tax amount computed in Odoo doesn't match with the tax amount in Magento.
 
 Cause:
 The taxes are probably different between Odoo and Magento. A fiscal position could have changed the final price.
@@ -117,8 +117,8 @@ Check your taxes and fiscal positions configuration and correct them if necessar
             <field name="sequence">30</field>
             <field name="model">sale.order</field>
             <field
-                name="code"
-            ># By default, a cent of difference for the tax amount is allowed, feel free to customise it in your own module
+            name="code"
+        ># By default, a cent of difference for the tax amount is allowed, feel free to customise it in your own module
 if sale.magento_bind_ids and abs(sale.amount_tax - sale.magento_bind_ids[0].total_amount_tax) > 0.01:
     failed = True</field>
             <field name="active" eval="True" />
@@ -139,5 +139,5 @@ if sale.magento_bind_ids and abs(sale.amount_tax - sale.magento_bind_ids[0].tota
             <field name="name">Magento Rewards</field>
             <field name="categ_id" ref="connector_ecommerce.product_categ_services" />
         </record>
-    </data>
+
 </odoo>
